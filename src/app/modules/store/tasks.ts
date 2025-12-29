@@ -4,7 +4,7 @@ export interface Task {
   id: string;
   title: string;
   description?: string;
-  completed: boolean;
+  status: string;
   createdAt: string;
 }
 
@@ -17,8 +17,8 @@ export const useTasksStore = defineStore("tasks", {
 
   getters: {
     all: (state) => state.tasks,
-    completedCount: (state) => state.tasks.filter((t) => t.completed).length,
-    remainingCount: (state) => state.tasks.filter((t) => !t.completed).length,
+    completedCount: (state) => state.tasks.filter((t) => t.status === "completed").length,
+    remainingCount: (state) => state.tasks.filter((t) => t.status !== "completed").length,
   },
 
   actions: {
@@ -35,8 +35,13 @@ export const useTasksStore = defineStore("tasks", {
           id: t.id ?? t.uuid ?? String(t._id ?? ""),
           title: t.title ?? "",
           description: t.description ?? t.desc ?? undefined,
-          completed:
-            typeof t.completed === "boolean" ? t.completed : !!t.completed,
+          status:
+            t.status ??
+            (typeof t.completed === "boolean"
+              ? t.completed
+                ? "completed"
+                : "pending"
+              : "pending"),
           createdAt: t.created_at ?? t.createdAt ?? t.createdAtRaw ?? "",
         })) as Task[];
         this.tasks = normalized;

@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="page">
     <h1>Lista de Tarefas</h1>
 
@@ -17,11 +17,62 @@
       </div>
     </section>
   </div>
+</template> -->
+
+<template>
+  <section class="flex flex-col gap-4 page">
+    <div>
+      <h1 class="text-lg font-black">Lista de Tarefas</h1>
+    </div>
+    <div v-for="task in tasks" :key="task.id">
+      <Card class="task-card p-4">
+        <template #title>{{ task.title }}</template>
+        <template #content>
+          <p class="m-0">
+            {{ task.description }}
+          </p>
+        </template>
+        <template #footer>
+          <div class="flex gap-6 items-center mt-2">
+            <div class="flex items-center gap-2">
+              <i
+                :class="{
+                  'pi pi-circle-fill text-green-400':
+                    task.status === 'Completed',
+                  'pi pi-clock text-yellow-400': task.status === 'Pending',
+                  'pi pi-hourglass text-blue-400':
+                    task.status === 'In Progress',
+                }"
+              ></i>
+              <strong
+                :class="{
+                  'text-green-400': task.status === 'Completed',
+                  'text-yellow-400': task.status === 'Pending',
+                  'text-blue-400': task.status === 'In Progress',
+                }"
+              >
+                {{ task.status }}
+              </strong>
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="pi pi-calendar"></i>
+              <small>
+                {{ formatDate(task.createdAt) }}
+              </small>
+            </div>
+          </div>
+        </template>
+      </Card>
+    </div>
+  </section>
 </template>
+
+<script setup></script>
 
 <script setup lang="ts">
 import { computed, onMounted } from "vue";
 import { useTasksStore } from "../store/tasks";
+import Card from "primevue/card";
 
 const store = useTasksStore();
 
@@ -73,5 +124,10 @@ function formatDate(dateStr: string | undefined) {
 .done {
   text-decoration: line-through;
   opacity: 0.75;
+}
+
+.task-card {
+  background-color: #18181a;
+  color: #ffffff;
 }
 </style>
